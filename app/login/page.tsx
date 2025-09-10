@@ -1,4 +1,5 @@
 "use client"
+export const dynamic = "force-dynamic"
 
 import type React from "react"
 
@@ -21,7 +22,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
-  const { user, loading } = useAuth()
+  const { user, loading } = { user: null, loading: false } as any
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -163,76 +164,14 @@ export default function LoginPage() {
             <p className="text-gray-600 dark:text-white/70">멤버 전용 자료실에 접근하려면 로그인하세요</p>
           </div>
 
-          {/* Login Card */}
+          {/* Login Disabled Notice */}
           <Card className="bg-white/80 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 shadow-xl">
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-bold text-center">로그인</CardTitle>
+              <CardTitle className="text-2xl font-bold text-center">로그인이 비활성화되었습니다</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">이메일 / 아이디</Label>
-                  <Input
-                    id="email"
-                    type="text"
-                    placeholder="이메일 또는 아이디를 입력하세요"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="bg-white/50 dark:bg-white/5 border-gray-300 dark:border-white/20 focus:border-purple-500 dark:focus:border-purple-400"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">비밀번호</Label>
-                  <div className="relative">
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="bg-white/50 dark:bg-white/5 border-gray-300 dark:border-white/20 focus:border-purple-500 dark:focus:border-purple-400 pr-10"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-gray-400" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-gray-400" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-
-                {error && (
-                  <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-                    <AlertCircle className="h-4 w-4 text-red-500" />
-                    <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-                  </div>
-                )}
-
-                <Button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 dark:from-purple-500 dark:via-pink-500 dark:to-cyan-500 text-white hover:scale-105 transition-all duration-300 hover:shadow-xl"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "로그인 중..." : "로그인"}
-                </Button>
-              </form>
-
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600 dark:text-white/70">
-                  계정이 없으신가요?{" "}
-                  <Link href="/signup" className="text-purple-600 dark:text-purple-400 hover:underline">
-                    회원가입
-                  </Link>
-                </p>
+              <div className="p-4 text-center text-gray-700 dark:text-white/70">
+                현재 데모 모드로 로그인 기능이 꺼져 있습니다.
               </div>
             </CardContent>
           </Card>

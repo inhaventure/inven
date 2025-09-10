@@ -1,4 +1,4 @@
-import { createClient, isSupabaseConfigured } from "@/lib/supabase/server"
+import { isSupabaseConfigured } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import SignUpForm from "@/components/sign-up-form"
 
@@ -14,16 +14,7 @@ export default async function SignUpPage() {
     )
   }
 
-  // Check if user is already logged in
-  const supabase = createClient()
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
-  // If user is logged in, redirect to home page
-  if (session) {
-    redirect("/")
-  }
+  // Supabase 비활성 모드에서는 세션 체크를 생략
 
   return <SignUpForm />
 }

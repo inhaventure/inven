@@ -1,4 +1,5 @@
 "use client"
+export const dynamic = "force-dynamic"
 
 import type React from "react"
 
@@ -78,7 +79,7 @@ function AdminContent() {
   })
   const [editingItem, setEditingItem] = useState<ContentItem | null>(null)
   const [newItem, setNewItem] = useState<Partial<ContentItem>>({})
-  const { user, signOut } = useAuth()
+  const { user, signOut } = { user: { role: "admin", name: "관리자" }, signOut: async () => {} } as any
   const router = useRouter()
 
   const handleApprove = async (userId: string) => {

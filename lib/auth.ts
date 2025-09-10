@@ -1,4 +1,4 @@
-import { supabase } from "./supabase/client"
+import { getSupabaseClient, isSupabaseConfigured } from "./supabase/client"
 
 export interface AuthUser {
   id: string
@@ -75,6 +75,10 @@ export const signIn = async (email: string, password: string) => {
 
   // 실제 Supabase 로그인
   try {
+    if (!isSupabaseConfigured) {
+      throw new Error("Supabase is not configured")
+    }
+    const supabase = getSupabaseClient()
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -140,6 +144,10 @@ export const signUp = async (email: string, password: string, name?: string) => 
 
   // 실제 Supabase 회원가입
   try {
+    if (!isSupabaseConfigured) {
+      throw new Error("Supabase is not configured")
+    }
+    const supabase = getSupabaseClient()
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -198,7 +206,8 @@ export const signOut = async () => {
     localStorage.removeItem("mockSession")
   }
 
-  if (!isV0Environment()) {
+  if (!isV0Environment() && isSupabaseConfigured) {
+    const supabase = getSupabaseClient()
     const { error } = await supabase.auth.signOut()
     if (error) {
       throw new Error(error.message)
@@ -239,6 +248,10 @@ export const getCurrentUser = async (): Promise<AuthUser | null> => {
 
   // 실제 Supabase 사용자 확인
   try {
+    if (!isSupabaseConfigured) {
+      return null
+    }
+    const supabase = getSupabaseClient()
     const {
       data: { user },
       error,
@@ -284,6 +297,10 @@ export const checkUserApproval = async (userId: string) => {
   }
 
   try {
+    if (!isSupabaseConfigured) {
+      return { status: "pending" as const, role: "user" as const }
+    }
+    const supabase = getSupabaseClient()
     const { data, error } = await supabase.from("users").select("status, role").eq("id", userId).single()
 
     if (error) {
@@ -320,6 +337,10 @@ export const getSession = async () => {
   }
 
   try {
+    if (!isSupabaseConfigured) {
+      return null
+    }
+    const supabase = getSupabaseClient()
     const {
       data: { session },
       error,
@@ -366,6 +387,16 @@ export const onAuthStateChange = (callback: (user: AuthUser | null) => void) => 
     }
   }
 
+  if (!isSupabaseConfigured) {
+    return {
+      data: {
+        subscription: {
+          unsubscribe: () => {},
+        },
+      },
+    }
+  }
+  const supabase = getSupabaseClient()
   return supabase.auth.onAuthStateChange(async (event, session) => {
     console.log("Auth state changed:", event, session?.user?.email)
     if (session?.user) {

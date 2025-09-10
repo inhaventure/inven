@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState } from "react"
+import { useFormState } from "react-dom"
 import { useFormStatus } from "react-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -35,7 +35,7 @@ function SubmitButton() {
 export default function SignUpForm() {
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
-  const [state, formAction] = useActionState(signUp, null)
+  const [state, formAction] = useFormState(signUp as any, null)
 
   // v0 환경 감지
   const isV0Environment =

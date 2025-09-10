@@ -1,4 +1,4 @@
-import { supabase } from "./supabase/client"
+import { getSupabaseClient, isSupabaseConfigured } from "./supabase/client"
 
 export interface PendingUser {
   id: string
@@ -53,6 +53,11 @@ export const getPendingUsers = async (): Promise<PendingUser[]> => {
     return []
   }
 
+  if (!isSupabaseConfigured) {
+    return []
+  }
+
+  const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from("users")
     .select("id, email, name, created_at, status")
@@ -97,6 +102,10 @@ export const getAllUsers = async () => {
     return []
   }
 
+  if (!isSupabaseConfigured) {
+    return []
+  }
+  const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from("users")
     .select("id, email, name, created_at, status, updated_at, role")
@@ -129,6 +138,10 @@ export const approveUser = async (userId: string, adminId: string) => {
     return []
   }
 
+  if (!isSupabaseConfigured) {
+    return []
+  }
+  const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from("users")
     .update({
@@ -165,6 +178,10 @@ export const rejectUser = async (userId: string) => {
     return []
   }
 
+  if (!isSupabaseConfigured) {
+    return []
+  }
+  const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from("users")
     .update({
@@ -196,6 +213,10 @@ export const deleteUser = async (userId: string) => {
   }
 
   // users 테이블에서 삭제
+  if (!isSupabaseConfigured) {
+    return
+  }
+  const supabase = getSupabaseClient()
   const { error: userError } = await supabase.from("users").delete().eq("id", userId)
 
   if (userError) {
@@ -213,6 +234,10 @@ export const isAdmin = async (userId: string): Promise<boolean> => {
     return false
   }
 
+  if (!isSupabaseConfigured) {
+    return false
+  }
+  const supabase = getSupabaseClient()
   const { data, error } = await supabase.from("users").select("role").eq("id", userId).single()
 
   if (error || !data) {
@@ -229,6 +254,10 @@ export const getContentByType = async (pageType: "learning" | "galleries" | "med
     return content ? JSON.parse(content) : []
   }
 
+  if (!isSupabaseConfigured) {
+    return []
+  }
+  const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from("content")
     .select("*")
@@ -257,6 +286,14 @@ export const addContent = async (pageType: "learning" | "galleries" | "media", c
     return newContent
   }
 
+  if (!isSupabaseConfigured) {
+    return {
+      id: `mock-${Date.now()}`,
+      ...contentData,
+      created_at: new Date().toISOString(),
+    }
+  }
+  const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from("content")
     .insert({
@@ -292,6 +329,10 @@ export const updateContent = async (id: string, contentData: any) => {
     return null
   }
 
+  if (!isSupabaseConfigured) {
+    return null
+  }
+  const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from("content")
     .update({
@@ -327,6 +368,10 @@ export const deleteContent = async (id: string) => {
     return
   }
 
+  if (!isSupabaseConfigured) {
+    return
+  }
+  const supabase = getSupabaseClient()
   const { error } = await supabase.from("content").delete().eq("id", id)
 
   if (error) {

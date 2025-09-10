@@ -1,4 +1,5 @@
 "use client"
+export const dynamic = "force-dynamic"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,7 +11,7 @@ import { useRouter } from "next/navigation"
 
 export default function PendingApprovalPage() {
   const [isDarkMode, setIsDarkMode] = useState(true)
-  const { user, signOut, isApproved } = useAuth()
+  const { user, signOut, isApproved } = { user: null, signOut: async () => {}, isApproved: false } as any
   const router = useRouter()
 
   useEffect(() => {
@@ -21,11 +22,7 @@ export default function PendingApprovalPage() {
   }, [])
 
   // 승인된 사용자는 대시보드로 리다이렉트
-  useEffect(() => {
-    if (isApproved) {
-      router.push("/dashboard")
-    }
-  }, [isApproved, router])
+  // 로그인 비활성화 상태에서는 리다이렉트 없음
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode)

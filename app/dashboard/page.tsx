@@ -1,4 +1,5 @@
 "use client"
+export const dynamic = "force-dynamic"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,7 +12,7 @@ import { useRouter } from "next/navigation"
 
 function DashboardContent() {
   const [isDarkMode, setIsDarkMode] = useState(true)
-  const { user, signOut } = useAuth()
+  const { user, signOut } = { user: { name: "게스트" }, signOut: async () => {} } as any
   const router = useRouter()
 
   useEffect(() => {

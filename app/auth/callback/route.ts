@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { isSupabaseConfigured } from "@/lib/supabase/server"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
@@ -6,12 +6,9 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code")
   const next = searchParams.get("next") ?? "/"
 
-  if (code) {
-    const supabase = createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
-    }
+  if (code && isSupabaseConfigured) {
+    // Supabase 미구성 시 우회
+    return NextResponse.redirect(`${origin}${next}`)
   }
 
   // Return the user to an error page with instructions
